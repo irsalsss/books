@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import 'antd/dist/antd.min.css';
 import Routes from 'routes';
 
 const queryClient = new QueryClient({
