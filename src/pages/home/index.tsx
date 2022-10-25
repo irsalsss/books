@@ -1,8 +1,11 @@
-import React from 'react'
+import React from 'react';
+import Categories from './Categories';
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div className='mt-[20px] w-[80%]'>
+      <Categories />
+    </div>
   )
 }
 
