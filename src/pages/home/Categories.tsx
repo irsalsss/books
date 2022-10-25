@@ -3,55 +3,52 @@ import { isEmpty } from '@utils/general';
 import { getCategories } from 'services/categories';
 import Tag from 'components/tag/Tag';
 import { TCategory } from 'types/category';
-import { CATEGORY_ALL } from '@constants/category';
+import useHomeStore from 'store/useHomeStore';
+import shallow from 'zustand/shallow';
+import Text from '@components/text/Text';
 
 const Categories = () => {
-  const [activeTag, setActiveTag] = useState(CATEGORY_ALL.name);
-  // const { data: resCategories } = getCategories();
-  const categories = [
-    {
-      "id": 1,
-      "name": "Happiness & Mindfulness"
-    },
-    {
-      "id": 11,
-      "name": "Career & Business"
-    },
-    {
-      "id": 12,
-      "name": "Productivity & Time Management"
-    },
-    {
-      "id": 19,
-      "name": "Society & Politics"
-    },
-    {
-      "id": 21,
-      "name": "Investment & Finance"
+  const { activeTag, setActiveTag } = useHomeStore(
+    (state) => ({
+      activeTag: state.activeTag,
+      setActiveTag: state.setActiveTag,
+    }),
+    shallow
+  )
+
+  const { data: resCategories } = getCategories({
+    onSuccess: (res: any) => {
+      const response: TCategory[] = res?.data;
+      if (!isEmpty(response)) {
+        setActiveTag(String(response[0].id))
+      }
     }
-  ]
-  // const categories = resCategories?.data || [];
+  });
 
-  const modifiedCategories: TCategory[] = useMemo(() => {
-    return [CATEGORY_ALL, ...categories]
-  }, [categories])
+  const categories = resCategories?.data || [];
 
-  const onChangeCategory = (val: string) => {
-    setActiveTag(val);
+  const onChangeCategory = (val: number | string) => {
+    setActiveTag(String(val));
   }
+
   return (
-    <div className='flex flex-wrap gap-[24px]'>
-      {!isEmpty(modifiedCategories) && modifiedCategories.map((v: TCategory) => {
-        return (
-          <Tag
-            key={v.id}
-            title={v.name}
-            onClick={onChangeCategory}
-            isActive={activeTag === v.name}
-          />
-        )
-      })}
-    </div>
+    <>
+      <Text level={2} value='Explore Categories' />
+      <div className='flex flex-wrap gap-[24px]'>
+        {!isEmpty(categories) && categories.map((v: TCategory) => {
+          const stringId = String(v.id);
+          return (
+            <Tag
+              key={stringId}
+              id={stringId}
+              title={v.name}
+              onClick={onChangeCategory}
+              isActive={activeTag === stringId}
+            />
+          )
+        })}
+      </div>
+    </>
   )
 }
 

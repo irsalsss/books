@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Config } from '@constants/config';
 import { isEmpty } from './general';
 
 type TClientOptions = {
@@ -25,7 +24,6 @@ const client = (
   url: string,
   options: Partial<TClientOptions> = defaultOptions,
 ) => async () => {
-  console.log(url)
   const {
     params, method, data, headers
   } = options;
@@ -56,9 +54,7 @@ const client = (
 
   try {
     const res = await axios({
-      // url: `${Config.apiBaseUrl}${url}`,
       url: `/api${url}`,
-      // url: `${url}`,
       ...newOptions
     });
     newData = res;
