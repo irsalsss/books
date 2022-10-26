@@ -8,10 +8,11 @@ import shallow from 'zustand/shallow';
 import Text from '@components/text/Text';
 
 const Categories = () => {
-  const { activeTag, setActiveTag } = useHomeStore(
+  const { activeTag, setActiveTag, setDictCategory } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
       setActiveTag: state.setActiveTag,
+      setDictCategory: state.setDictCategory,
     }),
     shallow
   )
@@ -21,6 +22,13 @@ const Categories = () => {
       const response: TCategory[] = res?.data;
       if (!isEmpty(response)) {
         setActiveTag(String(response[0].id))
+        
+        const dictCategory: Record<number, string> = {};
+        response.forEach((v) => {
+          dictCategory[v.id] = v.name;
+        })
+
+        setDictCategory(dictCategory);
       }
     }
   });

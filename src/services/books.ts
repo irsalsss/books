@@ -1,20 +1,42 @@
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import client from "utils/client";
 import { TQueryOptions } from "types/client";
 
-export const getBooks = (params: Object, queryOptions?: TQueryOptions) => {
+export const getBooks = (categoryId: string, queryOptions?: TQueryOptions) => {
+  const fetchBooks = ({ pageParam = 0 }) => client(`/fee-assessment-books`, { params: {
+    categoryId,
+    page: pageParam,
+    size: 10,
+  }})()
   const {
-    data, isLoading, isError, refetch
-  } = useQuery(
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery(
     ['getBooks'],
-    client(`/fee-assessment-books`, { params }),
-    queryOptions
+    fetchBooks,
+    {
+      enabled: Boolean(categoryId),
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage?.length >= 10) {
+          return pages.length * 10;
+        }
+        return undefined;
+      },
+      ...queryOptions
+    }
   );
-
+  
   return {
     data,
-    isLoading,
-    isError,
-    refetch,
+    hasNextPage, 
+    fetchNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
   };
 };

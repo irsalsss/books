@@ -9,6 +9,7 @@ const Text = ({
   level,
   value,
   isTitle,
+  isStrong,
   className
 }: ITextProps) => {
   if (!isTitle) {
@@ -16,6 +17,7 @@ const Text = ({
       <TextAntd
         type={type}
         className={className}
+        strong={isStrong}
       >
         {value}
       </TextAntd>
@@ -36,6 +38,7 @@ interface ITextProps {
   type?: BaseType | undefined,
   level?: 1 | 5 | 2 | 3 | 4 | undefined,
   isTitle: boolean,
+  isStrong?: boolean,
   className?: string,
   value: string,
 }
@@ -44,6 +47,7 @@ Text.defaultProps = {
   type: undefined,
   level: undefined,
   isTitle: true,
+  isStrong: false,
   className: '',
 };
 
