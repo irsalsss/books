@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Text from 'components/text/Text'
 import Input from 'components/input/Input'
 import { getBooks } from 'services/books'
@@ -11,6 +11,7 @@ import useDebounceValue from '@hooks/useDebounceValue'
 import { deepClone, isEmpty } from '@utils/general'
 import EmptyData from 'components/state/EmptyData'
 import clsx from 'clsx'
+import { Spin } from 'antd'
 
 const BookLists = () => {
   const [searchBy, setSearchBy] = useState(SEARCH_BOOKS_BY.TITLE);
@@ -19,7 +20,6 @@ const BookLists = () => {
   const [filteredBooks, setFilteredBooks] = useState<TBook[]>([]);
 
   const debounceSearch = useDebounceValue(search, 500);
-  const scrollRef = useRef<number>(100);
   const { activeTag, dictCategory } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
@@ -31,6 +31,7 @@ const BookLists = () => {
   const {
     hasNextPage,
     fetchNextPage,
+    isFetching,
     isFetchingNextPage,
   } = getBooks(
     activeTag,
@@ -46,16 +47,17 @@ const BookLists = () => {
   );
 
   const onInfiniteScroll = () => {
-    if (hasNextPage && !isFetchingNextPage) {
+    if (hasNextPage && !isFetchingNextPage && !isFetching) {
       fetchNextPage();
     }
   };
 
   const onScroll = (e: any) => {
-    const scrollTop = e.target.scrollTop
-    const curr = scrollRef.current;
-    if (curr < scrollTop) {
-      scrollRef.current += 500;
+    const target = e.target;
+    const scrollTop = target.scrollTop;
+    const scrollHeight = target.scrollHeight;
+    const clientHeight = target.clientHeight;
+    if (scrollHeight - scrollTop < clientHeight + 400) {
       onInfiniteScroll();
     }
   };
@@ -70,6 +72,24 @@ const BookLists = () => {
     setSearch(value)
   }
 
+  const onFilterBooks = () => {
+    let filtered: TBook[] = [];
+    const currBooks = deepClone(books);
+
+    if (searchBy === SEARCH_BOOKS_BY.TITLE) {
+      filtered = currBooks.filter((book: any) => book[searchBy].toLowerCase().includes(search));
+    } else {
+      currBooks.forEach((book: TBook) => {
+        const isAuthorExist = book.authors.some((author: string) => author.toLowerCase().includes(search))
+        if (isAuthorExist) {
+          filtered.push(book);
+        }
+      });
+    }
+
+    setFilteredBooks(filtered);
+  }
+
   const selectAfter = (
     <Select
       options={BOOKS_OPT_SEARCH}
@@ -78,19 +98,9 @@ const BookLists = () => {
     />
   )
 
-  // search functional
   useEffect(() => {
-    if (debounceSearch) {
-      let filtered = [];
-      const currBooks = deepClone(books);
-
-      if (searchBy === SEARCH_BOOKS_BY.TITLE) {
-        filtered = currBooks.filter((book: any) => book[searchBy].toLowerCase().includes(debounceSearch));
-      }
-
-      // todo filter by author
-
-      setFilteredBooks(filtered);
+    if (search) {
+      onFilterBooks();
       return;
     }
 
@@ -110,6 +120,7 @@ const BookLists = () => {
         />
       </div>
       <div
+        id='books-scroller'
         onScroll={onScroll}
         className="overflow-y-auto max-h-screen"
       >
@@ -134,8 +145,13 @@ const BookLists = () => {
               </div>
             </div>
           ))}
-          {isEmpty(filteredBooks) && (
+          {!isFetching && isEmpty(filteredBooks) && (
             <EmptyData />
+          )}
+          {isFetching && (
+            <div className='p-[12px] w-full flex justify-center'>
+              <Spin size="large" />
+            </div>
           )}
         </div>
       </div>

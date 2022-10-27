@@ -6,8 +6,10 @@ import { TCategory } from 'types/category';
 import useHomeStore from 'store/useHomeStore';
 import shallow from 'zustand/shallow';
 import Text from '@components/text/Text';
+import { useQueryClient } from 'react-query';
 
 const Categories = () => {
+  const queryClient = useQueryClient();
   const { activeTag, setActiveTag, setDictCategory } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
@@ -36,7 +38,19 @@ const Categories = () => {
   const categories = resCategories?.data || [];
 
   const onChangeCategory = (val: number | string) => {
-    setActiveTag(String(val));
+    const element = document.getElementById('books-scroller');
+    if (element) {
+      element.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+    queryClient.removeQueries('getBooks')
+
+    setTimeout(() => {
+      setActiveTag(String(val));
+    }, 500)
   }
 
   return (
