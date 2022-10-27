@@ -7,11 +7,19 @@ import shallow from 'zustand/shallow'
 import { TBook } from 'types/book'
 import { SEARCH_BOOKS_BY, BOOKS_OPT_SEARCH } from 'constants/book'
 import Select from '@components/select/Select'
+import useDebounceValue from '@hooks/useDebounceValue'
+import { deepClone, isEmpty } from '@utils/general'
+import EmptyData from 'components/state/EmptyData'
+import clsx from 'clsx'
 
 const BookLists = () => {
   const [searchBy, setSearchBy] = useState(SEARCH_BOOKS_BY.TITLE);
-  const [books, setBooks] = useState([]);
-  const scrollRef = useRef<number>(500);
+  const [search, setSearch] = useState('');
+  const [books, setBooks] = useState<TBook[]>([]);
+  const [filteredBooks, setFilteredBooks] = useState<TBook[]>([]);
+
+  const debounceSearch = useDebounceValue(search, 500);
+  const scrollRef = useRef<number>(100);
   const { activeTag, dictCategory } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
@@ -55,6 +63,12 @@ const BookLists = () => {
   const onChangeSearchBy = (value: string) => {
     setSearchBy(value);
   }
+  
+  const onSearch = (e: React.ChangeEvent<Element>) => {
+    const element = e.currentTarget as HTMLInputElement;
+    const value = element.value;
+    setSearch(value)
+  }
 
   const selectAfter = (
     <Select
@@ -64,6 +78,25 @@ const BookLists = () => {
     />
   )
 
+  // search functional
+  useEffect(() => {
+    if (debounceSearch) {
+      let filtered = [];
+      const currBooks = deepClone(books);
+
+      if (searchBy === SEARCH_BOOKS_BY.TITLE) {
+        filtered = currBooks.filter((book: any) => book[searchBy].toLowerCase().includes(debounceSearch));
+      }
+
+      // todo filter by author
+
+      setFilteredBooks(filtered);
+      return;
+    }
+
+    setFilteredBooks(books);
+  }, [books, debounceSearch, searchBy])
+
   return (
     <div className='mt-[8px] mb-[24px]'>
       <Text level={2} value='Explore Books' />
@@ -72,14 +105,21 @@ const BookLists = () => {
           wrapperClassName='w-[40%] '
           placeholder={`Search books by ${searchBy}`}
           addonAfter={selectAfter}
+          onChange={onSearch}
+          value={search}
         />
       </div>
       <div
         onScroll={onScroll}
         className="overflow-y-auto max-h-screen"
       >
-        <div className='flex flex-wrap gap-[32px]'>
-          {books.map((v: TBook) => (
+        <div 
+          className={clsx(
+            'flex flex-wrap gap-[32px]',
+            isEmpty(filteredBooks) && 'justify-center',
+          )}
+        >
+          {filteredBooks.map((v: TBook) => (
             <div className='flex flex-col' key={v.id}>
               <img
                 src={v.cover_url}
@@ -94,6 +134,9 @@ const BookLists = () => {
               </div>
             </div>
           ))}
+          {isEmpty(filteredBooks) && (
+            <EmptyData />
+          )}
         </div>
       </div>
     </div>
