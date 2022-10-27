@@ -13,4 +13,4 @@
 - API `fee-assessment-books` does not support for get all category. When we're not set `categoryId` params, the api should retrieved all the book from all category. 
 - API `fee-assessment-books` does not support for sorting, e.g: ascending, descending, most viewed, best seller, current trend, recommendation, etc.
 - API `fee-assessment-books` does not support for multiple filter. e.g: `categoryId=1,11,12`
-- 
+- API `fee-assessment-books` does not support for search and its pagination, so the user can only search what they've retrieved at that time.
