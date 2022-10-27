@@ -40,9 +40,9 @@ const Categories = () => {
   }
 
   return (
-    <>
+    <div className='sticky top-[24px] bg-white pb-[8px]'>
       <Text level={2} value='Explore Categories' />
-      <div className='flex flex-wrap gap-[24px]'>
+      <div className='flex gap-[12px] max-w-max overflow-x-auto'>
         {!isEmpty(categories) && categories.map((v: TCategory) => {
           const stringId = String(v.id);
           return (
@@ -52,11 +52,12 @@ const Categories = () => {
               title={v.name}
               onClick={onChangeCategory}
               isActive={activeTag === stringId}
+              className='min-w-max'
             />
           )
         })}
       </div>
-    </>
+    </div>
   )
 }
 

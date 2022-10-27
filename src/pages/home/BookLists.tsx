@@ -1,13 +1,17 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Text from 'components/text/Text'
+import Input from 'components/input/Input'
 import { getBooks } from 'services/books'
 import useHomeStore from 'store/useHomeStore'
 import shallow from 'zustand/shallow'
 import { TBook } from 'types/book'
+import { SEARCH_BOOKS_BY, BOOKS_OPT_SEARCH } from 'constants/book'
+import Select from '@components/select/Select'
 
 const BookLists = () => {
+  const [searchBy, setSearchBy] = useState(SEARCH_BOOKS_BY.TITLE);
   const [books, setBooks] = useState([]);
-  const scrollRef = useRef<number>(40);
+  const scrollRef = useRef<number>(500);
   const { activeTag, dictCategory } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
@@ -40,16 +44,36 @@ const BookLists = () => {
   };
 
   const onScroll = (e: any) => {
+    const scrollTop = e.target.scrollTop
     const curr = scrollRef.current;
-    if (curr < e.target.scrollTop) {
-      scrollRef.current += 40;
+    if (curr < scrollTop) {
+      scrollRef.current += 500;
       onInfiniteScroll();
     }
   };
 
+  const onChangeSearchBy = (value: string) => {
+    setSearchBy(value);
+  }
+
+  const selectAfter = (
+    <Select
+      options={BOOKS_OPT_SEARCH}
+      value={searchBy}
+      onChange={onChangeSearchBy}
+    />
+  )
+
   return (
-    <div className='mt-[32px]'>
+    <div className='mt-[8px] mb-[24px]'>
       <Text level={2} value='Explore Books' />
+      <div className='sticky top-[112px] pb-[16px] bg-white'>
+        <Input
+          wrapperClassName='w-[40%] '
+          placeholder={`Search books by ${searchBy}`}
+          addonAfter={selectAfter}
+        />
+      </div>
       <div
         onScroll={onScroll}
         className="overflow-y-auto max-h-screen"

@@ -5,11 +5,13 @@ const Tag = ({
   id,
   title,
   onClick,
-  isActive
+  isActive,
+  className
 }: ITagProps) => {
   return (
     <div
       className={clsx(
+        className,
         "text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full border cursor-pointer",
         isActive ? 'text-white bg-zinc-900' : 'text-gray-700 bg-white'
       )}
@@ -27,11 +29,13 @@ interface ITagProps {
   id: string,
   onClick?: (id: string) => void;
   isActive?: boolean;
+  className?: string;
 }
 
 Tag.defaultProps = {
   onClick: (id: string) => {},
   isActive: false,
+  className: '',
 }
 
 export default Tag;

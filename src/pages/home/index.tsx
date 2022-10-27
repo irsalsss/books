@@ -4,7 +4,7 @@ import Categories from './Categories';
 
 const HomePage = () => {
   return (
-    <div className='mt-[20px] w-[80%]'>
+    <div id='home-page' className='mt-[20px] w-[80%]'>
       <Categories />
       <BookLists />
     </div>

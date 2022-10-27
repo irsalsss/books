@@ -17,13 +17,13 @@ export const getBooks = (categoryId: string, queryOptions?: TQueryOptions) => {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery(
-    ['getBooks'],
+    ['getBooks', categoryId],
     fetchBooks,
     {
       enabled: Boolean(categoryId),
       getNextPageParam: (lastPage, pages) => {
-        if (lastPage?.length >= 10) {
-          return pages.length * 10;
+        if (lastPage?.data?.length >= 10) {
+          return pages.length;
         }
         return undefined;
       },
