@@ -15,3 +15,4 @@
 - API `fee-assessment-books` should support for multiple filter. e.g: `categoryId=1,11,12`
 - API `fee-assessment-books` should support for search and its pagination, so the user can only search what they've retrieved at that time.
 - API `fee-assessment-books` should support for detail books by booksId
+- All content-type of the response API should be `application/json`

@@ -25,23 +25,19 @@ const DetailPage = () => {
 
   const {
     bookDetail, setBookDetail,
-    dictCategory
+    dictCategory,
+    bookmarks, setBookmarks, deleteBookmarks
   } = useDetailStore(
     (state) => ({
       bookDetail: state.bookDetail,
       setBookDetail: state.setBookDetail,
-      dictCategory: state.dictCategory
+      dictCategory: state.dictCategory,
+      bookmarks: state.bookmarks,
+      setBookmarks: state.setBookmarks,
+      deleteBookmarks: state.deleteBookmarks,
     }),
     shallow
   );
-
-  const onBookmark = () => {
-
-  }
-
-  const onOpenAccordion = (val: string | string[]) => {
-    setOpenAccordion(val)
-  }
 
   useEffect(() => {
     window.scrollTo({
@@ -67,8 +63,26 @@ const DetailPage = () => {
     return `${Math.floor((detailData.audio_length || 0) / 60)} minutes`
   }, [detailData.audio_length])
 
+  const isSaved = useMemo(() => {
+    return bookmarks[bookId!];
+  }, [bookmarks])
+
   if (!isLoading && isEmpty(detailData)) {
     return <Navigate replace to='/404' />;
+  }
+
+  const onBookmark = () => {
+    const isSaved = bookmarks[bookId!]
+    if (isSaved) {
+      deleteBookmarks(detailData);
+      return;
+    }
+
+    setBookmarks(detailData)
+  }
+
+  const onOpenAccordion = (val: string | string[]) => {
+    setOpenAccordion(val)
   }
 
   return (
@@ -116,7 +130,11 @@ const DetailPage = () => {
           <Text isTitle={false} value={detailData.description} />
         </div>
         <div className='absolute right-[24px] top-[24px] cursor-pointer' onClick={onBookmark}>
-          <BookOutlined style={{ fontSize: 20 }} />
+          {isSaved ? (
+            <BookFilled style={{ fontSize: 20 }} />
+          ) : (
+            <BookOutlined style={{ fontSize: 20 }} />
+          )}
         </div>
       </div>
       <div className='flex mt-[32px]'>

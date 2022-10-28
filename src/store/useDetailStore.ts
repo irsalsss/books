@@ -3,14 +3,19 @@ import create, { StateCreator } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { deepClone } from '../utils/general';
 
-type Store = {
-  bookDetail: Record<number | string, TBook>;
+type TDictBook = Record<number | string, TBook>;
+
+type TStore = {
+  bookDetail: TDictBook;
   setBookDetail: (newObj: Partial<TBook>) => void;
   dictCategory: Record<number, string>;
   setDictCategory: (value: Record<number, string>) => void;
+  bookmarks: TDictBook;
+  setBookmarks: (newObj: Partial<TBook>) => void;
+  deleteBookmarks: (newObj: Partial<TBook>) => void;
 };
 
-const useDetailStore = create<Store>()(persist((set) => ({
+const useDetailStore = create<TStore>()(persist((set) => ({
   bookDetail: {},
   setBookDetail: (newObj: Partial<TBook>) => set((state) => {
     const currDetail = deepClone(state.bookDetail);
@@ -20,6 +25,19 @@ const useDetailStore = create<Store>()(persist((set) => ({
   }),
   dictCategory: {},
   setDictCategory: (value: Record<number, string>) => set({ dictCategory: value }),
+  bookmarks: {},
+  setBookmarks: (newObj: Partial<TBook>) => set((state) => {
+    const currBookmars = deepClone(state.bookmarks);
+    const id = newObj.id;
+    currBookmars[id!] = newObj;
+    return { bookmarks: currBookmars }
+  }),
+  deleteBookmarks: (newObj: Partial<TBook>) => set((state) => {
+    const currBookmars = deepClone(state.bookmarks);
+    const id = newObj.id;
+    delete currBookmars[id!];
+    return { bookmarks: currBookmars }
+  }),
 }), {
   name: 'bookDetail',
   getStorage: () => localStorage
