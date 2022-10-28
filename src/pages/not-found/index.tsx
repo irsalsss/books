@@ -2,7 +2,7 @@ import { Result } from 'antd';
 
 const NotFound = () => {
   return (
-    <div className="flex flex-1 justify-center grow items-center">
+    <div className="flex flex-1 justify-center grow items-center h-screen">
       <Result
         status="404"
         title="404"

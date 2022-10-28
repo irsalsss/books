@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.border-1px-grey {
+  border-bottom: 1px solid gainsboro;
+}
+
+.ant-collapse-expand-icon {
+  display: flex;
+  top: 4px;
+  position: relative;
+}

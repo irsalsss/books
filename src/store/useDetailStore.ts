@@ -6,6 +6,8 @@ import { deepClone } from '../utils/general';
 type Store = {
   bookDetail: Record<number | string, TBook>;
   setBookDetail: (newObj: Partial<TBook>) => void;
+  dictCategory: Record<number, string>;
+  setDictCategory: (value: Record<number, string>) => void;
 };
 
 const useDetailStore = create<Store>()(persist((set) => ({
@@ -16,6 +18,8 @@ const useDetailStore = create<Store>()(persist((set) => ({
     currDetail[id!] = newObj;
     return { bookDetail: currDetail }
   }),
+  dictCategory: {},
+  setDictCategory: (value: Record<number, string>) => set({ dictCategory: value }),
 }), {
   name: 'bookDetail',
   getStorage: () => localStorage

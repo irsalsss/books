@@ -10,6 +10,7 @@ const Tag = ({
 }: ITagProps) => {
   return (
     <div
+      id={`tag-${id}`}
       className={clsx(
         className,
         "text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 rounded-full border cursor-pointer",

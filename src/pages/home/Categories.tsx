@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect } from 'react'
 import { isEmpty } from '@utils/general';
 import { getCategories } from 'services/categories';
 import Tag from 'components/tag/Tag';
@@ -7,19 +7,25 @@ import useHomeStore from 'store/useHomeStore';
 import shallow from 'zustand/shallow';
 import Text from '@components/text/Text';
 import { useQueryClient } from 'react-query';
+import useDetailStore from 'store/useDetailStore';
+import { Spin } from 'antd';
 
 const Categories = () => {
   const queryClient = useQueryClient();
-  const { activeTag, setActiveTag, setDictCategory } = useHomeStore(
+  const { setDictCategory } = useDetailStore(
+    (state) => ({
+      setDictCategory: state.setDictCategory,
+    })
+  )
+  const { activeTag, setActiveTag } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
       setActiveTag: state.setActiveTag,
-      setDictCategory: state.setDictCategory,
     }),
     shallow
   )
 
-  const { data: resCategories } = getCategories({
+  const { data: resCategories, isLoading } = getCategories({
     onSuccess: (res: any) => {
       const response: TCategory[] = res?.data;
       if (!isEmpty(response)) {
@@ -55,11 +61,22 @@ const Categories = () => {
     setActiveTag(String(val));
   }
 
+  useEffect(() => {
+    return () => {
+      setActiveTag('')
+    }
+  }, [])
+
   return (
     <div className='sticky top-[24px] bg-white pb-[8px]'>
       <Text level={2} value='Explore Categories' />
+      {isLoading && (
+        <div className='p-[12px] w-full flex justify-center'>
+          <Spin size="large" />
+        </div>
+      )}
       <div className='flex gap-[12px] max-w-max overflow-x-auto'>
-        {!isEmpty(categories) && categories.map((v: TCategory) => {
+        {!isLoading && !isEmpty(categories) && categories.map((v: TCategory) => {
           const stringId = String(v.id);
           return (
             <Tag

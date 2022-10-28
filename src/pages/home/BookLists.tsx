@@ -22,20 +22,17 @@ const BookLists = () => {
   const [filteredBooks, setFilteredBooks] = useState<TBook[]>([]);
 
   const debounceSearch = useDebounceValue(search, 500);
-  const { activeTag, dictCategory } = useHomeStore(
+  const { dictCategory } = useDetailStore(
+    (state) => ({
+      dictCategory: state.dictCategory,
+    })
+  )
+  const { activeTag } = useHomeStore(
     (state) => ({
       activeTag: state.activeTag,
-      dictCategory: state.dictCategory,
     }),
     shallow
   )
-
-  const { setBookDetail } = useDetailStore(
-    (state) => ({
-      setBookDetail: state.setBookDetail,
-    }),
-    shallow
-  );
 
   const {
     hasNextPage,
@@ -153,6 +150,7 @@ const BookLists = () => {
                 height={360}
                 width={240}
                 loading="lazy"
+                className='lg:w-[240px] xxs:w-[200px]'
               />
               <div className='flex flex-col mt-[12px]'>
                 <Text isTitle={false} isStrong value={v.title} />
@@ -165,7 +163,7 @@ const BookLists = () => {
               <EmptyData />
             </div>
           )}
-          {isFetching || isEmpty(dictCategory) && (
+          {(isFetching || isEmpty(dictCategory)) && (
             <div className='p-[12px] w-full flex justify-center'>
               <Spin size="large" />
             </div>
