@@ -4,6 +4,7 @@ import BookLists from '@pages/home/BookLists'
 import shallow from 'zustand/shallow'
 import { TBook } from 'types/book'
 import { isEmpty } from '@utils/general'
+import Text from '@components/text/Text'
 
 const BookmarkPage = () => {
   const { dictCategory, bookmarks } = useDetailStore(
@@ -27,6 +28,7 @@ const BookmarkPage = () => {
 
   return (
     <div id='bookmark-page' className='mt-[20px] w-[80%]'>
+      <Text level={2} value='Bookmarks' />
       <BookLists isFetching={false} filteredBooks={filteredBooks} dictCategory={dictCategory} />
     </div>
   )

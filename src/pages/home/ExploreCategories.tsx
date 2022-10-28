@@ -10,7 +10,7 @@ import { useQueryClient } from 'react-query';
 import useDetailStore from 'store/useDetailStore';
 import { Spin } from 'antd';
 
-const Categories = () => {
+const ExploreCategories = () => {
   const queryClient = useQueryClient();
   const { setDictCategory } = useDetailStore(
     (state) => ({
@@ -94,4 +94,4 @@ const Categories = () => {
   )
 }
 
-export default Categories
+export default ExploreCategories
