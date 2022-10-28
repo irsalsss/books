@@ -8,6 +8,7 @@ type THomeStore = {
 const slice: StateCreator<THomeStore> = (set, get) => ({
   activeTag: '',
   setActiveTag: (value: string) => set({ activeTag: value }),
+
 });
 
 const useHomeStore = create<THomeStore>(slice);
