@@ -21,7 +21,8 @@ const ExploreBooks = () => {
   const { dictCategory } = useDetailStore(
     (state) => ({
       dictCategory: state.dictCategory,
-    })
+    }),
+    shallow
   )
   const { activeTag } = useHomeStore(
     (state) => ({
