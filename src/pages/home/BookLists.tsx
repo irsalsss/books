@@ -133,8 +133,9 @@ const BookLists = () => {
       >
         <div 
           className={clsx(
-            'flex flex-wrap gap-[32px]',
+            'flex flex-wrap',
             'xxs:justify-center md:justify-start',
+            'xxs:gap-[16px] md:gap-[32px]'
           )}
         >
           {filteredBooks.map((v: TBook) => (
@@ -152,7 +153,7 @@ const BookLists = () => {
                 loading="lazy"
                 className='lg:w-[240px] xxs:w-[200px]'
               />
-              <div className='flex flex-col mt-[12px]'>
+              <div className='flex flex-col mt-[12px] lg:w-[240px] xxs:w-[200px]'>
                 <Text isTitle={false} isStrong value={v.title} />
                 <Text isTitle={false} value={dictCategory[v.category_id]} type='secondary' />
               </div>
