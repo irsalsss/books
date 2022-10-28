@@ -12,6 +12,8 @@ import { deepClone, isEmpty } from '@utils/general'
 import EmptyData from 'components/state/EmptyData'
 import clsx from 'clsx'
 import { Spin } from 'antd'
+import { Link } from 'react-router-dom'
+import useDetailStore from 'store/useDetailStore'
 
 const BookLists = () => {
   const [searchBy, setSearchBy] = useState(SEARCH_BOOKS_BY.TITLE);
@@ -27,6 +29,13 @@ const BookLists = () => {
     }),
     shallow
   )
+
+  const { setBookDetail } = useDetailStore(
+    (state) => ({
+      setBookDetail: state.setBookDetail,
+    }),
+    shallow
+  );
 
   const {
     hasNextPage,
@@ -131,7 +140,12 @@ const BookLists = () => {
           )}
         >
           {filteredBooks.map((v: TBook) => (
-            <div className='flex flex-col' key={v.id}>
+            <Link 
+              to={`/detail/${v.id}`}
+              state={{ detailBook: v }}
+              className='flex flex-col'
+              key={v.id}
+            >
               <img
                 src={v.cover_url}
                 alt={v.title}
@@ -143,7 +157,7 @@ const BookLists = () => {
                 <Text isTitle={false} isStrong value={v.title} />
                 <Text isTitle={false} value={dictCategory[v.category_id]} type='secondary' />
               </div>
-            </div>
+            </Link>
           ))}
           {!isFetching && isEmpty(filteredBooks) && (
             <EmptyData />

@@ -43,14 +43,16 @@ const Categories = () => {
       element.scroll({
         top: 0,
         left: 0,
+      });
+      window.scrollTo({
+        top: 100,
+        left: 100,
         behavior: 'smooth'
       });
     }
     queryClient.removeQueries('getBooks')
 
-    setTimeout(() => {
-      setActiveTag(String(val));
-    }, 500)
+    setActiveTag(String(val));
   }
 
   return (
