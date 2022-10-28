@@ -26,6 +26,10 @@ const DetailPage = () => {
     }
   }, [])
 
+  const detailData = useMemo(() => {
+    return bookDetail?.[bookId!];
+  }, [bookDetail])
+
   return (
     <div>DetailPage</div>
   )

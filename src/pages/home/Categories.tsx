@@ -45,8 +45,8 @@ const Categories = () => {
         left: 0,
       });
       window.scrollTo({
-        top: 100,
-        left: 100,
+        top: 124,
+        left: 0,
         behavior: 'smooth'
       });
     }

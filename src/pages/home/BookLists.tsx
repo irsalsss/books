@@ -104,6 +104,7 @@ const BookLists = () => {
       options={BOOKS_OPT_SEARCH}
       value={searchBy}
       onChange={onChangeSearchBy}
+      selectClassName='w-[120px]'
     />
   )
 
@@ -121,7 +122,7 @@ const BookLists = () => {
       <Text level={2} value='Explore Books' />
       <div className='sticky top-[112px] pb-[16px] bg-white'>
         <Input
-          wrapperClassName='w-[40%] '
+          wrapperClassName='w-[400px]'
           placeholder={`Search books by ${searchBy}`}
           addonAfter={selectAfter}
           onChange={onSearch}
@@ -136,7 +137,7 @@ const BookLists = () => {
         <div 
           className={clsx(
             'flex flex-wrap gap-[32px]',
-            isEmpty(filteredBooks) && 'justify-center',
+            'xxs:justify-center md:justify-start',
           )}
         >
           {filteredBooks.map((v: TBook) => (
@@ -159,10 +160,12 @@ const BookLists = () => {
               </div>
             </Link>
           ))}
-          {!isFetching && isEmpty(filteredBooks) && (
-            <EmptyData />
+          {!isFetching && isEmpty(filteredBooks) && !isEmpty(dictCategory) && (
+            <div className='p-[12px] w-full flex justify-center'>
+              <EmptyData />
+            </div>
           )}
-          {isFetching && (
+          {isFetching || isEmpty(dictCategory) && (
             <div className='p-[12px] w-full flex justify-center'>
               <Spin size="large" />
             </div>
